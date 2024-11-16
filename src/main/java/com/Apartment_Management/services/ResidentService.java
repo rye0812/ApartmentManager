@@ -1,8 +1,7 @@
 package com.Apartment_Management.services;
 
-import com.Apartment_Management.Repo.ResidentRepository;
+import com.Apartment_Management.repository.ResidentRepository;
 import com.Apartment_Management.model.Resident;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

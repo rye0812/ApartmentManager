@@ -1,4 +1,4 @@
-package com.Apartment_Management.Repo;
+package com.Apartment_Management.repository;
 
 import com.Apartment_Management.model.Resident;
 import org.springframework.data.jpa.repository.JpaRepository;
