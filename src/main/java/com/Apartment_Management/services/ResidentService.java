@@ -3,6 +3,8 @@ package com.Apartment_Management.services;
 import com.Apartment_Management.repository.ResidentRepository;
 import com.Apartment_Management.model.Resident;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,14 @@ public class ResidentService {
     }
 
     // Thêm mới cư dân
-    public Resident addResident(Resident resident) {
+    public Resident addResident(Resident resident, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.append(error.getDefaultMessage()).append(". ");
+            }
+            throw new IllegalArgumentException("Validation failed: " + errorMessages.toString());
+        }
         return residentRepository.save(resident);
     }
 

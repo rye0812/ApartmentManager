@@ -1,7 +1,12 @@
 package com.Apartment_Management.controller;
 
 import com.Apartment_Management.model.Resident;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import com.Apartment_Management.services.ResidentService;
 
@@ -13,6 +18,9 @@ public class ResidentController {
 
     @Autowired
     private ResidentService residentService;
+    public ResidentController(ResidentService residentService) {
+        this.residentService = residentService;
+    }
 
     // Lấy danh sách tất cả cư dân
     @GetMapping
@@ -20,16 +28,35 @@ public class ResidentController {
         return residentService.getAllResidents();
     }
 
-    // Thêm mới cư dân
+
+
     @PostMapping
-    public Resident addResident(@RequestBody Resident resident) {
-        return residentService.addResident(resident);
+    public ResponseEntity<String> addResident(@RequestBody @Valid Resident resident, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.append(error.getDefaultMessage()).append(". ");
+            }
+            return ResponseEntity.badRequest().body("Validation failed: " + errorMessages.toString());
+        }
+        residentService.addResident(resident, result);
+        return ResponseEntity.ok("Resident added successfully");
     }
 
-    // Cập nhật thông tin cư dân
     @PutMapping("/{id}")
-    public Resident updateResident(@PathVariable Long id, @RequestBody Resident resident) {
-        return residentService.updateResident(id, resident);
+    public ResponseEntity<String> updateResident(@PathVariable Long id, @RequestBody @Valid Resident updatedResident, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.append(error.getDefaultMessage()).append(". ");
+            }
+            return ResponseEntity.badRequest().body("Validation failed: " + errorMessages.toString());
+        }
+        Resident updated = residentService.updateResident(id, updatedResident);
+        if (updated == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resident not found");
+        }
+        return ResponseEntity.ok("Resident updated successfully");
     }
 
     // Xóa cư dân

@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ResidentRepository extends JpaRepository<Resident, Long> {
-    List<Resident> findByHouseholdId(Long householdId);
+    List<Resident> findByHouseholdId(String householdId);
     Resident findByIdCard(String idCard);
 }
